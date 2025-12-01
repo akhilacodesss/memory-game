@@ -1,17 +1,11 @@
-body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #5D3C64;
-    height: 100vh;
-}
-
 .container {
+
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 50px;
+    padding: 40px;
     flex-direction: column;
+    background-color: #5D3C64;
 }
 
 .cards {
