@@ -94,7 +94,7 @@ function checkMatch() {
         Card1.style.backgroundColor = "";
         Card2.style.backgroundColor = "";
         resetFlippedCards();
-         }, 400);
+         }, 200);
     }
 }
 
