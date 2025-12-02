@@ -17,114 +17,103 @@ let colors = [
     "#0f1363ff", "#0f1363ff",
 
 ];
-let Card1 = null;
-let Card2 = null;
-let flippedCard = false;
+
+let firstCard = null;
+let secondCard = null;
+let lockBoard = false;
 let matchedPairs = 0;
-let gameOver = false;
 
 
 
-
-function shuffleColors() {
-    for (let i = 0; i < colors.length; i++) {
-        let j = Math.floor(Math.random() * colors.length);
-
-        let temp = colors[i];
-        colors[i] = colors[j];
-        colors[j] = temp;
-    }
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
 }
 
 function assignColors() {
-    cards.forEach(function(card, index) {
-        card.color = colors[index];
-        card.style.backgroundColor = "";
-        card.matched = false;
-    });
+  const shuffled = shuffle([...colors]);
 
-    matchedPairs = 0;
-    matched.textContent = matchedPairs;
-    message.textContent = "";
-    Card1 = null;
-    Card2 = null;
-    flippedCard = false;
-    gameOver = false;
+  cards.forEach((card, index) => {
+    card.dataset.color = shuffled[index];
+    card.style.backgroundColor = "#b36788";
+    card.classList.remove("matched");
+  });
+
+  firstCard = null;
+  secondCard = null;
+  lockBoard = false;
+
+  matchedPairs = 0;
+  matched.textContent = matchedPairs;
+  message.textContent = "";
 }
 
-function clickedCard(card) {
-    cardClick(card);
-}
+function flipCard(card) {
+  if (lockBoard) return;
+  if (card.classList.contains("matched")) return;
+  if (card === firstCard) return;
 
+  card.style.backgroundColor = card.dataset.color;
 
-function cardClick(card) { 
-    if (card.matched) return;
-    if (gameOver) return;
-    if (card === Card1) return;
+  if (!firstCard) {
+    firstCard = card;
+    return;
+  }
 
+  secondCard = card;
+  lockBoard = true;
 
-    card.style.backgroundColor = card.color;
-
-    if (!Card1) {
-        Card1 = card;
-    } else {
-        Card2 = card;
-        flippedCard = true;
-        checkMatch();
-    }
+  checkMatch();
 }
 
 function checkMatch() {
-    if (Card1.color === Card2.color) {
-        matchedPairs++;
-        matched.textContent = matchedPairs;
-        message.textContent = "Yayy You found a match";
+  const isMatch = firstCard.dataset.color === secondCard.dataset.color;
 
-        Card1.matched = true;
-        Card2.matched = true;
+  if (isMatch) {
+    firstCard.classList.add("matched");
+    secondCard.classList.add("matched");
 
+    matchedPairs++;
+    matched.textContent = matchedPairs;
+    message.textContent = "Match found!";
 
-        resetFlippedCards();
-        checkWin();
+    resetSelection();
+    return;
+  }
+   message.textContent = "Not a match, try again";
 
-    } else {
-        message.textContent = "Try again!";
-
-        setTimeout(() => {
-        Card1.style.backgroundColor = "";
-        Card2.style.backgroundColor = "";
-        resetFlippedCards();
-         }, 200);
-    }
+  setTimeout(() => {
+    firstCard.style.backgroundColor = "#b36788";
+    secondCard.style.backgroundColor = "#b36788";
+    resetSelection();
+  }, 900);
 }
 
-function resetFlippedCards() {
-    Card1 = null;
-    Card2 = null;
-    flippedCard = false;
+function resetSelection() {
+  firstCard = null;
+  secondCard = null;
+  lockBoard = false;
+
+  if (matchedPairs === colors.length / 2) {
+    message.textContent = "You won! Click Restart to play again.";
+  }
 }
 
-function checkWin() {
-    if (matchedPairs === colors.length / 2) {
-        message.textContent = "Yay you WON the game, Click Restart to play again";
-        gameOver = true;
-    }
-}
 
 
 function resetGame() {
-    shuffleColors();
-    assignColors();
+  shuffle(colors);
+  assignColors();
 }
 
-cards.forEach(function(card) {
-    card.addEventListener("click", function() {
-        clickedCard(card);
-    });
+cards.forEach(card => {
+  card.addEventListener("click", () => flipCard(card));
 });
 
 restartBtn.addEventListener("click", resetGame);
 
-
-shuffleColors();
+shuffle(colors);
 assignColors();
