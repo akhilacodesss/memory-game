@@ -57,9 +57,10 @@ function clickedCard(card) {
 }
 
 
-function cardClick(card) {
+function cardClick(card) { 
     if (card.matched) return;
-    if (gameOver || flippedCard || card === Card1 || card.matched) return;
+    if (gameOver) return;
+    if (card === Card1) return;
 
 
     card.style.backgroundColor = card.color;
@@ -89,9 +90,11 @@ function checkMatch() {
     } else {
         message.textContent = "Try again!";
 
+        setTimeout(() => {
         Card1.style.backgroundColor = "";
         Card2.style.backgroundColor = "";
         resetFlippedCards();
+         }, 1000);
     }
 }
 

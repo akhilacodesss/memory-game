@@ -22,10 +22,11 @@ body {
 }
 
 .card {
-   background-color: #b36788;
+    background-color: #b36788;
     width: 100px;
     height: 100px;
     border-radius: 10px;
+    transition: background-color 0.3s ;
 }
 
  h1 { 
